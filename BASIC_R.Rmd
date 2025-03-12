@@ -242,13 +242,210 @@ sum(x)
 ```
 
 
+#### Matrix
+
+* 행렬은 데이터 유형(숫자, 문자 등)이 **같은 요소**들의 2차원 나열이며 2차원으로 구성된 벡터로 볼 수 있다.
+
+* 벡터와 같은 방식의 연산이 수행되며 행렬의 곱은 다음의 연산자를 사용한다. **%*%**
+
+```{r}
+x = 1:12
+
+matrix(data = x, nrow = 3 ,ncol = 4) # col을 기준으로 원소가 들어간다.
+matrix(data = x, nrow = 3) # row가 3이므로 자동으로 col은 4가 된다.
+matrix(data = x, nrow = 3, byrow = TRUE) # byrow == 행 기준으로 원소가 들어가게..
+```
+
+```{r}
+m = matrix(data =x , ncol = 3, byrow = TRUE)
+m[3, 1] # 3행 1열
+m[2, ]
+m[, c(1, 3)]
+m[7]
+as.vector(m) # 열을 뽑아서 벡터화..
+m[m > 5]
+```
+
+#### 백터를 사용한 행렬의 생성
+
+* 행렬은 여러개의 벡터들을 사용한 생성이 가능하다.
+* **벡터들은 길이가 모두 동일해야한다.**
+
+#### Naming the Matrix
+
+* 행렬은 `rownames()`, `colnames()`라는 함수로 각 행과 열에 이름을 지정하는 것이 가능하다.
+
+* 당연히 행렬 이외의 객체에도 naming이 가능하다. (ex.vector)
+
+* 벡터와 마찬가지로 지정한 이름으로 인덱싱이 가능하다.
+
+```{r}
+x = 1:5
+y = c(2, 3, 5, 7, 11)
+z = -2:2
+
+rbind(x, y, z)
+cbind(x, y, z)
+
+rbind(x, prime = y, z) # name = data
+
+rbind(x, y, z, deparse.level = 0) # level = 0(=no names)
+
+rbind(x, y, z, deparse.level = 1) # level = 1(=objects names), default
+rbind(1:5, c(2, 3, 5, 7, 11), -2:2, deparse.level = 1) # level = 1(=objects names | no names)
+
+rbind(x, y, z, deparse.level = 2) # level = 2(= must make names)
+rbind(1:5, c(2, 3, 5, 7, 11), -2:2, deparse.level = 2)
+```
+
+```{r}
+m = matrix(1:6, nrow = 3)
+
+x = c(2, 3, 5)
+cbind(m, x, deparse.level = 0)
+cbind(m, x, m, deparse.level = 0)
+```
+
+```{r}
+x = 1:10
+m = matrix(data = x, ncol = 5)
+rownames(m)
+colnames(m)
+
+rownames(m) = c("odd", "even")
+colnames(m) = c("1st", "2nd", "3rd", "4th", "5th")
+m
+```
 
 
+#### Functions of Matrix
+
+```{r}
+m = matrix(data = c(2, 3,5, 7, 11, 13), 3)
+?row()
+row(m); col(m) # row() == 행 기준으로 index 출력 matrix 꼴로
+
+row(m) <= col(m)
+
+m[row(m) <= col(m)]
+m[row(m) > col(m)] = 100
+m
+
+nrow(m); ncol(m); dim(m)
+
+rowSums(m) # 행 하나 잡고 sum
+colMeans(m)
+
+# matrix cal functions
+m = cbind(m, c(1, 2, 3))
+
+solve(m) # inverse of m
+t(m)
+b = c(2, 3, 1)
+solve(m, b) # solves the equation of mx = b for x
+
+diag(m)
+
+diag(3)
+diag(4, nrow = 2)
+```
+
+* Array는 생략
+
+#### Apply
+
+* apply 함수는 행 또는 열에 **각각 벡터 함수**를 적용하고자 할 때 사용된다.
+
+* `apply(X, MARGIN, FUNC, ...)`
+
+  1. X : matrix, array, DataFrame 등 행과 열을 가진 객체
+  2. MARGIN : 함수를 적용할 방향, 1 = 행, 2 = 열
+  3. FUNC : 적용할 함수
+  
+  
+```{r}
+m = matrix(c(9, 6, 2, 4, 3, 8, 5, 7, 1), 3)
+apply(m, 1,sum) # rowSums(m)
+apply(m, 1, cumsum)
+apply(m, 1, function(xx) sum(xx[xx>=5]))
+```
+
+### List
+
+* list는 백터의 일반적인 형태이며 데이터 유형이나 길이가 같을 필요가 없다.
+* `apply()`와 비슷한 `lapply()`가 있다.
+
+```{r}
+x = list(
+  num = c(1, 2, 3),
+  "ABCD",
+  identity = diag(2)
+)
+
+x
+x[1] # 1층 
+x[[1]] # 1층의 values
+
+x$num
+x["num"]
+x[["num"]]
+
+x[3]
+x[[3]]
+x[[3]][2, 1]
+```
+
+```{r}
+A = list(X = seq(101, 55, -5), Y = seq(205, 299, 8))
+A
+
+lapply(A, sum)
+```
+
+#### Factor
+
+* Factor는 문자형 데이터의 특이한 형태이다.
+* 문자형 데이터이면서 특정 요소들이 반복될 때 유용하다.
+* 정해진 요소 외에는 입력이 불가능하다.
+* 생물통계학 저장소의 lecture1.md를 참고하자.
+
+```{r}
+x1 = gl(n = 3, k = 5, labels = c("A", "B", "C"))
+#gl(n = 3, k = 5, labels = c("A", "B")) -> error
+gl(n = 3, k = 5, labels = c("A", "B", "C", "D"))
+
+levels(x1)
+table(x1)
+
+x2 = rep(c("A", "B", "C"), each = 5)
+x3 = factor(x2)
+x3
+```
 
 
+#### Data Frame
 
+* Matrix와 비슷한 구조이다.
+* 열은 **하나의 데이터 유형**으로 이루어져 있다.
+* 각 열들은 데이터의 유형이 다를 수 있다.
+* `data.frame()`으로 생성할 수 있다.
 
+```{r}
+data = data.frame(
+  char_num = c("1", "2", "3", "4"),
+  score = c(80, 90, 70, 60),
+  grade = factor(c("A", "A", "B", "C"), levels = c("A", "B", "C", "F"))
+)
 
+# indexing 방법은 matrix나 list 등과 유사함..
+
+row.names(data)
+row.names(data) = c("1st", "2nd", "3rd", "4th")
+colnames(data)
+colnames(data)[2]
+colnames(data)[2] = "mid"
+data
+```
 
 
 
