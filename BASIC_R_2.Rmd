@@ -1,0 +1,159 @@
+---
+title: "BASIC_R_2"
+output: rmarkdown::github_document
+---
+
+## Basic of R 2
+
+### Create Random Samples
+
+* `sample()`, `distribution()` 함수를 이용한다.
+
+#### Sample function
+
+* `sample()` 함수는 벡터 또는 리스트의 요소 중 n개를 선택하고 추출하는 함수이다.
+
+```
+sample(x, size, replace = TRUE, prob = NULL)
+```
+
+* x : 벡터 또는 리스트
+* size : 추출할 갯수
+* replace : 비복원(False) 또는 복원(TRUE)의 선택
+* prob : 추출할 확률
+
+```{r}
+sample(x = 1:10)
+sample(x = 1:10, size = 5)
+sample(x = 1:10, size = 5, replace = TRUE)
+
+sample(x = c(1:4), size = 1, prob = c(0.1, 0.2, 0.3, 0.4)) # element wise하게 각 숫자에 확률 부여
+```
+
+```{r}
+s = sample(1:365, 45, replace = TRUE)
+s
+
+unique(s)
+duplicated(s)
+s[duplicated(s)]
+```
+
+
+#### Distribution Functions
+
+1. `r` : 난수 생성
+2. `d` : 밀도 함수
+3. `p` : 누적 밀도 함수
+4. `q` : 분위수 함수
+
+
+```{r}
+# 난수 생성
+rnorm(n = 5, mean = 0, sd = 1)
+rbinom(n = 10, size = 5, prob = 0.5)
+rchisq(n = 3, df = 10)
+
+# 밀도 함수(밀도 함수값을 출력...)
+dnorm(x = 0, mean = 0, sd = 1)
+dnorm(x = 3, mean = 0, sd = 1)
+dnorm(x = -3, mean = 0, sd = 1)
+
+# 누적 밀도 함수(적분값)
+pnorm(0, mean = 0, sd = 1)
+pnorm(-3, mean = 0, sd = 1)
+pnorm(3, mean = 0, sd = 1)
+1 - pnorm(-3, mean = 0, sd = 1)
+
+pnorm(1.96, mean = 0, sd = 1)
+pnorm(-1.96, mean = 0, sd = 1)
+
+# 분위수(누적값을 주면 그에 해당하는 x 값 출력)
+qnorm(0.975, mean = 0, sd = 1)
+qnorm(0.025, mean = 0, sd = 1)
+```
+
+
+### 조건문
+
+* 뭐이건...그냥 꼴만알면 되고 그 이후는 능지 문제죠..?
+* if - else 구문 쓸 떄 else 붙혀쓰는것만 조심핮.
+
+```{r}
+# ex1
+
+x = 24
+if (x == 3){
+  print("x is 3")
+}else{
+  print("x is not 3")
+}
+```
+
+
+```{r}
+# 이 예제만 보면 대충 느낌오쥬?
+
+if (x < 10){
+  print("x is less than 10")
+}else if(x < 20){
+  print("x is less than 20")
+}else if(x < 30){
+  print("x is less than 30")
+}else{
+  print("x is greater than or equal to 30")
+}
+```
+
+* `if(cond) expr1 else expr2` -> `ifelse()` 사용하자..!
+  * 약간 뭐랄까 벡터,메트릭스, 데이터프레임 안에 있는 값을 치환해줄때 야무지게 쓸 수 있는 느낌??
+
+```{r}
+x = seq(0, 2, length.out = 6)
+x
+ifelse(x <= 1, "small", "big")
+
+y = matrix(1:8, nrow = 2)
+y
+ifelse(y > 3 & y < 7, 1, 0)
+
+z = data.frame(
+  "A" = c(1,2,3,4),
+  "B" = c(1, 2, 3, 4),
+  "C" = c(5,6,7,8)
+)
+z
+ifelse(z > 3 & z < 7, 1, 0) # matrix로 출력된다.
+as.data.frame(ifelse(z > 3 & z < 7, 1, 0))
+```
+
+#### 조건문
+
+```{r}
+fac = NULL # 빈리스트, 자료형을 만드는 것과 동일한 작업
+f = 1
+for (i in 1:10){
+  f = f * i
+  fac[i] = f
+  print(f)
+}
+fac
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
